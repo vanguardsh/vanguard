@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Redirect;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\GithubProvider;
+use Masmerise\Toaster\Toaster;
 
 class GitHubSocialiteController extends Controller
 {
@@ -22,10 +23,19 @@ class GitHubSocialiteController extends Controller
      */
     public function redirectToProvider(): RedirectResponse|Redirect
     {
-        if (! config('services.github.client_id') || ! config('services.github.client_secret')) {
+        $providerCredentialsEmpty = !can_connect_github();
+
+        if ($providerCredentialsEmpty && Auth::guest()) {
             Log::debug('GitHub login is not enabled. Redirecting back to login.');
 
             return Redirect::route('login')->with('loginError', 'GitHub login is not enabled.');
+        }
+
+        if ($providerCredentialsEmpty && Auth::user()) {
+            Log::debug('GitHub login is not enabled. Redirecting back to login.');
+
+            Toaster::error(__('The GitHub connection is not available.'));
+            return Redirect::route('account.connections');
         }
 
         /** @var GitHubProvider $githubProvider */
@@ -58,7 +68,7 @@ class GitHubSocialiteController extends Controller
         }
     }
 
-    private function findUserByGitHubId(string $githubId): ?User
+    private function findUserByGitHubId(int $githubId): ?User
     {
         return User::where('github_id', $githubId)->first();
     }

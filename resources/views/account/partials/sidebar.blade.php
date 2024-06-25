@@ -8,6 +8,10 @@
         @svg('heroicon-o-tag', 'h-5 w-5 mr-2 inline')
         {{ __('Tags') }}
     </x-sidebar-nav-link>
+    <x-sidebar-nav-link :href="route('account.connections')" :active="request()->routeIs('account.connections')" wire:navigate>
+        @svg('heroicon-o-key', 'h-5 w-5 mr-2 inline')
+        {{ __('Connections') }}
+    </x-sidebar-nav-link>
     <x-sidebar-nav-link :href="route('account.remove-account')" :active="request()->routeIs('account.remove-account')" wire:navigate>
         @svg('heroicon-o-trash', 'h-5 w-5 mr-2 inline')
         {{ __('Remove Account') }}

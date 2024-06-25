@@ -25,6 +25,12 @@ Breadcrumbs::for('account.remove-account', function (BreadcrumbTrail $trail) {
     $trail->push(__('Remove Account'), route('account.remove-account'));
 });
 
+Breadcrumbs::for('account.connections', function (BreadcrumbTrail $trail) {
+    $trail->parent('profile');
+    $trail->push(__('Connections'), route('account.connections'));
+});
+
+
 Breadcrumbs::for('backup-tasks.index', function (BreadcrumbTrail $trail) {
     $trail->push(__('Backup Tasks'), route('backup-tasks.index'));
 });

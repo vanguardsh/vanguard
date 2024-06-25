@@ -12,14 +12,29 @@ it('redirects to GitHub when client ID and secret are set', function () {
     $response->assertRedirect();
 });
 
-it('redirects back to login with error if GitHub login is not enabled', function () {
+it('redirects back to login with error if GitHub login is not enabled as a guest', function () {
     config()->set('services.github.client_id', null);
     config()->set('services.github.client_secret', null);
 
     $response = $this->get(route('github.redirect'));
 
     $response->assertRedirect(route('login'));
+    $this->assertGuest();
     $response->assertSessionHas('loginError', 'GitHub login is not enabled.');
+});
+
+it('redirects back to connections with error if GitHub login is not enabled as a user', function () {
+    Toaster::fake();
+    config()->set('services.github.client_id', null);
+    config()->set('services.github.client_secret', null);
+
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->get(route('github.redirect'));
+
+    $response->assertRedirect(route('account.connections'));
+    $this->assertAuthenticatedAs($user);
+    Toaster::assertDispatched(__('The GitHub connection is not available.'));
 });
 
 it('logs in existing user with GitHub ID', function () {

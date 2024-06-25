@@ -29,6 +29,17 @@ test('delete page is displayed', function () {
         ->assertSeeVolt('profile.delete-user-form');
 });
 
+test('connections page is displayed', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+
+    $response = $this->get('/profile/connections');
+
+    $response
+        ->assertOk();
+});
+
 test('profile information can be updated', function () {
     Toaster::fake();
     $user = User::factory()->create();

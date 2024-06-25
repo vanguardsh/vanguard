@@ -18,6 +18,16 @@ function get_ssh_private_key(): string
 }
 
 /**
+ * Determines whether the 'GitHub' connection has been configured.
+ *
+ * @return bool
+ */
+function can_connect_github(): bool
+{
+    return config('services.github.client_id') || config('services.github.client_secret');
+}
+
+/**
  * Format timezones into a user-friendly format.
  *
  * @return array<string, string> Formatted timezones with keys as timezone identifiers and values as formatted strings.
